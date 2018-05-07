@@ -5,10 +5,16 @@
  */
 package BustAMove;
 
+import java.awt.image.BufferedImage;
+
 /**
  *
  * @author Alnguye
  */
-public class Movable {
+public class Movable extends GameObject {
+    
+    public Movable(int x, int y, BufferedImage Image, int width, int height) {
+	super(x, y, Image, width, height);
+    }
     
 }

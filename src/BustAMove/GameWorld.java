@@ -6,11 +6,13 @@ import static BustAMove.Main.WINDOW_WIDTH;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  *
@@ -22,7 +24,9 @@ public class GameWorld extends JPanel {
     private BufferedImage background;
     private static BufferedImage gameMap, setBB, setRB, setGB, setYB, setOB, setPB;
     private int width, height;
+    private Timer timer;
     private Graphics2D worldMapGraphics;
+    Graphics dbg;
     
     ArrayList<GameObject> GOList;
     ArrayList<BreakableBubble> BBList;
@@ -36,14 +40,22 @@ public class GameWorld extends JPanel {
 	initResources();
 	setBackground();
 	setMap();
+	initTimer();
 	
     }
     
     public void paintComponenet(Graphics g){
-	super.printComponents(g);
+	super.paintComponents(g);
 	drawEverything();
 	
 	
+    }
+    
+    
+     private void initTimer() {
+	timer = new Timer(1000 / 144, (ActionEvent e) -> {
+	    GameWorld.this.repaint();
+	});
     }
     
     public void drawEverything(){

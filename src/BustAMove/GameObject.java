@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package BustAMove;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 /**
@@ -35,6 +32,11 @@ public abstract class GameObject {
 
     public BufferedImage getImage() {
 	return this.content;
+    }
+    
+    //for collision detection
+    public Rectangle getHitBox() {
+	return new Rectangle(this.x, this.y, this.content.getWidth(), this.content.getHeight());
     }
 
     public void setX(int x) {
