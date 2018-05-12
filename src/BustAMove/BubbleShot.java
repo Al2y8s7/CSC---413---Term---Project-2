@@ -18,7 +18,7 @@ import java.util.Observable;
  */
 public class BubbleShot extends Movable {
     int deltaX,deltaY;
-    final int r = 15;
+    final int r = 6;
     private short angle;
     private int player;
     

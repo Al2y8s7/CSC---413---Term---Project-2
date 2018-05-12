@@ -65,6 +65,8 @@ public class GameWorld extends JPanel {
     
      private void initTimer() {
 	timer = new Timer(1000 / 144, (ActionEvent e) -> {
+	    GameWorld.this.checkShooting();
+	    //GameWorld.this.detectCollision();
 	    GameWorld.this.repaint();
 	});
     }
