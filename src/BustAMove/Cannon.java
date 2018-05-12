@@ -38,7 +38,7 @@ public class Cannon extends Movable implements Observer {
     long lastShoot = System.currentTimeMillis();
     final long threshold = 1000;
 
-    public Cannon(int x, int y, BufferedImage Image, KeyMapping kmap, int width, int height) {
+    public Cannon(int x, int y, short angle, int player, BufferedImage Image, KeyMapping kmap, int width, int height) {
 	super(x, y, Image, width, height);
 	keys = new HashSet();
 	this.keyMap = kmap;
@@ -55,6 +55,9 @@ public class Cannon extends Movable implements Observer {
     
     @Override
     public void update(Observable o, Object arg) {
+	Controller controller = (Controller) o;
+	keys = controller.getKeys();
+	moveCannon();
 	
     }
     
@@ -76,19 +79,19 @@ public class Cannon extends Movable implements Observer {
         return this.shotsFired;
     }
      
-   public synchronized void moveUp() {
-	deltaX = (int) Math.round(r * Math.cos(Math.toRadians(angle)));
-	deltaY = (int) Math.round(r * Math.sin(Math.toRadians(angle)));
-	x += deltaX;
-	y += deltaY;
-    }
-
-    public synchronized void moveDown() {
-	deltaX = (int) Math.round(r * Math.cos(Math.toRadians(angle)));
-	deltaY = (int) Math.round(r * Math.sin(Math.toRadians(angle)));
-	x -= deltaX;
-	y -= deltaY;
-    }
+//   public synchronized void moveUp() {
+//	deltaX = (int) Math.round(r * Math.cos(Math.toRadians(angle)));
+//	deltaY = (int) Math.round(r * Math.sin(Math.toRadians(angle)));
+//	x += deltaX;
+//	y += deltaY;
+//    }
+//
+//    public synchronized void moveDown() {
+//	deltaX = (int) Math.round(r * Math.cos(Math.toRadians(angle)));
+//	deltaY = (int) Math.round(r * Math.sin(Math.toRadians(angle)));
+//	x -= deltaX;
+//	y -= deltaY;
+//    }
 
     public synchronized void moveLeft() {
 	this.angle -= 10;
@@ -99,15 +102,15 @@ public class Cannon extends Movable implements Observer {
     }
 
     private void moveCannon() {
-	if (keys.contains(keyMap.getUpKey())) {
-	    this.moveUp();
-	}
+//	if (keys.contains(keyMap.getUpKey())) {
+//	    this.moveUp();
+//	}
 	if (keys.contains(keyMap.getRightKey())) {
 	    this.moveRight();
 	}
-	if (keys.contains(keyMap.getDownKey())) {
-	    this.moveDown();
-	}
+//	if (keys.contains(keyMap.getDownKey())) {
+//	    this.moveDown();
+//	}
 	if (keys.contains(keyMap.getLeftKey())) {
 	    this.moveLeft();
 	}
@@ -136,5 +139,7 @@ public class Cannon extends Movable implements Observer {
     public int getPlayer(){
         return this.player;
     }
+    
+    
     
 }
