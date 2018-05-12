@@ -7,6 +7,7 @@ package BustAMove;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Observable;
@@ -21,8 +22,8 @@ public class BubbleShot extends Movable {
     private short angle;
     private int player;
     
-    public BubbleShot(int x, int y, BufferedImage Image, int width, int height) {
-	super(x, y, Image, width, height);
+    public BubbleShot(int x, int y, short angle, int player, BufferedImage image,int width,int height) {
+	super(x, y, image, width, height);
 	this.angle = angle;
         this.player = player;
     }
@@ -43,6 +44,5 @@ public class BubbleShot extends Movable {
     public int getPlayer(){
         return this.player;
     }
-
     
 }

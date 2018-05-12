@@ -7,29 +7,36 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import java.util.Random;
 
 /**
  *
  * @author Alnguye
  */
 public class GameWorld extends JPanel {
-   
-    BufferedImage cannon1, cannon2;
-    private BufferedImage background;
-    private static BufferedImage gameMap, setBB, setRB, setGB, setYB, setOB, setPB;
+    
+    private Cannon cannon1, cannon2;
+    BufferedImage cannonImage;
+    private Controller cannonControls;
+    private BufferedImage background, leftScreen, rightScreen;
+    private static BufferedImage gameMap, setBB, setRB, setGB, setYB, setOB, setPB, bullet1;
     private int width, height;
     private Timer timer;
     private Graphics2D worldMapGraphics;
-    Graphics dbg;
+    private KeyMapping player1, player2;
     
     ArrayList<GameObject> GOList;
     ArrayList<BreakableBubble> BBList;
+    ArrayList<BubbleShot> BSList;
     
     
     
@@ -40,15 +47,19 @@ public class GameWorld extends JPanel {
 	initResources();
 	setBackground();
 	setMap();
+	initKeyMapping();
+	initCannon();
 	initTimer();
+	timer.start();
 	
     }
     
-    public void paintComponenet(Graphics g){
+    public void paintComponent(Graphics g){
 	super.paintComponents(g);
 	drawEverything();
-	
-	
+	SplitScreen(g);
+	drawBullets(g);
+	g.dispose();
     }
     
     
@@ -62,19 +73,22 @@ public class GameWorld extends JPanel {
 	worldMapGraphics = gameMap.createGraphics();
 	worldMapGraphics.drawImage(background, 0, 0, null);
 	drawBubble(worldMapGraphics);
+	cannon1.draw(worldMapGraphics);
+	drawBullets(worldMapGraphics);
     }
     
     public void initResources(){
 	try{
-	     background = ImageIO.read(GameWorld.class.getResource("/BustAMove/resources/Background2.png"));
-	     setBB = ImageIO.read(GameWorld.class.getResource("/BustAMove/resources/setBB.png"));
-	     setRB = ImageIO.read(GameWorld.class.getResource("/BustAMove/resources/setRB.png"));
-	     setGB = ImageIO.read(GameWorld.class.getResource("/BustAMove/resources/setGB.png"));
-	     setYB = ImageIO.read(GameWorld.class.getResource("/BustAMove/resources/setYB.png"));
-	     setOB = ImageIO.read(GameWorld.class.getResource("/BustAMove/resources/setOB.png"));
-	     setPB = ImageIO.read(GameWorld.class.getResource("/BustAMove/resources/setPB.png"));
-	     //C:\Users\alnguye\csc413-secondgame-Team12\src\BustAMove\resources\Background.PNG
-	     //C:\Users\alnguye\csc413-03-tankgame-Team12\src\TankWars\resources\Background2.png
+	     background = ImageIO.read(GameWorld.class.getResource("resources/Background.png"));
+	     setBB = ImageIO.read(GameWorld.class.getResource("resources/setBB.png"));
+	     setRB = ImageIO.read(GameWorld.class.getResource("resources/setRB.png"));
+	     setGB = ImageIO.read(GameWorld.class.getResource("resources/setGB.png"));
+	     setYB = ImageIO.read(GameWorld.class.getResource("resources/setYB.png"));
+	     setOB = ImageIO.read(GameWorld.class.getResource("resources/setOB.png"));
+	     setPB = ImageIO.read(GameWorld.class.getResource("resources/setPB.png"));
+	     cannonImage = ImageIO.read(GameWorld.class.getResource("resources/cannon.png"));
+	     bullet1 = ImageIO.read(GameWorld.class.getResource("resources/bullet1.png"));
+
 	     
 	}catch(IOException ex){
 	    ex.printStackTrace();
@@ -125,6 +139,16 @@ public class GameWorld extends JPanel {
     }
     
     
+    public void SplitScreen(Graphics g){
+	//left Screen
+	leftScreen = gameMap.getSubimage(0, 0, WINDOW_WIDTH / 2 - 25, 800);
+	g.drawImage(leftScreen, 0, 0, null);
+	//right Screen
+	rightScreen = gameMap.getSubimage(WINDOW_WIDTH / 2 - 21, 0, WINDOW_WIDTH / 2 + 15, 800);
+	g.drawImage(rightScreen, (WINDOW_WIDTH / 2 - 20), 0, null);
+    }
+    
+    
     public void setBackground(){
 	width = background.getWidth(this);
 	height = background.getHeight(this);
@@ -143,8 +167,55 @@ public class GameWorld extends JPanel {
 	}
     }
     
+    //TODO
+    public void randomBubble(){
+	Random randomB = new Random();
+	for(int i = 0; i <= 5; i++){
+	    randomB.nextInt();
+		if(i == 0){
+		    
+	    }
+	}
+    }
+    
     public void setGameLists(){
 	BBList = new ArrayList();
+	GOList = new ArrayList();
+	BSList = new ArrayList();
     }
+    
+    
+    public void initCannon(){
+	cannon1 = new Cannon(300, 600, (short) 0, 1, cannonImage, player1, 32, 32);
+	cannonControls = new Controller();
+	addKeyListener(cannonControls.getKeyAdapter());
+	this.cannonControls.addObserver(cannon1);
+	//this.cannonControls.addObserver(cannon2);
+    }
+    
+     private void initKeyMapping() {
+	player1 = new KeyMapping(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_ENTER);
+	player2 = new KeyMapping(KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_SPACE);
+    }
+    
+    public void checkShooting() {
+	if (cannon1.getShoot() == true) {
+	    BubbleShot bubbleShot = new BubbleShot(cannon1.getX() + (cannon1.getImageWidth() / 2), cannon1.getY() + (cannon1.getImageHeight() / 2), cannon1.getAngle(), 1, bullet1, 1, 1);
+	    BSList.add(bubbleShot);
+	    cannon1.setShoot(false);
+	}
+    }public void drawBullets(Graphics g) {
+	Iterator<BubbleShot> iterator = BSList.iterator();
+	while (iterator.hasNext()) {
+	    BubbleShot bubbleShot = iterator.next();
+	    if (!bubbleShot.getVisibility()) {
+		iterator.remove();
+	    } else {
+		bubbleShot.draw(g);
+		bubbleShot.move();
+	    }
+	}
+    }
+    
     
 }
