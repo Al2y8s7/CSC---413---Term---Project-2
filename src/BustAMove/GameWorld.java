@@ -34,10 +34,12 @@ public class GameWorld extends JPanel {
     private Timer timer;
     private Graphics2D worldMapGraphics;
     private KeyMapping player1, player2;
+    private int randomBubble;
     
     ArrayList<GameObject> GOList;
     ArrayList<BreakableBubble> BBList;
     ArrayList<BubbleShot> BSList;
+    
     
     
     
@@ -51,15 +53,17 @@ public class GameWorld extends JPanel {
 	initKeyMapping();
 	initCannon();
 	initTimer();
+        randomBubble();
 	timer.start();
 	
     }
     
     public void paintComponent(Graphics g){
 	super.paintComponents(g);
-	drawEverything();
-	SplitScreen(g);
-	g.dispose();
+	drawEverything(g);
+        drawNextBubble(g);
+	//SplitScreen(g);
+	//g.dispose();
     }
     
     
@@ -68,17 +72,17 @@ public class GameWorld extends JPanel {
             GameWorld.this.checkShooting();
             GameWorld.this.checkCollision();
             GameWorld.this.toBreakable();
-            GameWorld.this.breakBubbles();
 	    GameWorld.this.repaint();
 	});
     }
     
-    public void drawEverything(){
+    public void drawEverything(Graphics g){
 	worldMapGraphics = gameMap.createGraphics();
 	worldMapGraphics.drawImage(background, 0, 0, null);
 	drawBubble(worldMapGraphics);
 	cannon1.draw(worldMapGraphics);
 	drawBullets(worldMapGraphics);
+        g.drawImage(gameMap, 0, 0, null);
     }
     
     public void initResources(){
@@ -108,8 +112,8 @@ public class GameWorld extends JPanel {
 	//create reference for 2D array
 	int[][] GameMap = currMap.getGameMap();
 	//tile map with walls
-	for (int y = 0; y < 25; y++) {
-	    for (int x = 0; x <= 43; x++) {
+	for (int y = 0; y < GameMap.length; y++) {
+	    for (int x = 0; x < GameMap[0].length; x++) {
 		switch (GameMap[y][x]) {
 		    case 1:
 			breakableBubble = new BreakableBubble(x * 32, y * 32, setBB , 32, 32,"blue");
@@ -143,14 +147,18 @@ public class GameWorld extends JPanel {
     }
     
     
-    public void SplitScreen(Graphics g){
+ /*   public void SplitScreen(Graphics g){
 	//left Screen
+        
 	leftScreen = gameMap.getSubimage(0, 0, WINDOW_WIDTH / 2 - 25, 800);
 	g.drawImage(leftScreen, 0, 0, null);
 	//right Screen
 	rightScreen = gameMap.getSubimage(WINDOW_WIDTH / 2 - 21, 0, WINDOW_WIDTH / 2 + 15, 800);
 	g.drawImage(rightScreen, (WINDOW_WIDTH / 2 - 20), 0, null);
+
     }
+*/
+
     
     
     public void setBackground(){
@@ -161,25 +169,23 @@ public class GameWorld extends JPanel {
     }
     
     public void drawBubble(Graphics g){
-        for(BreakableBubble breakable: BBList){
-	    if(!breakable.getVisibility()){
-		BBList.remove(breakable);
+        Iterator<BreakableBubble> iterator = BBList.iterator();
+        while(iterator.hasNext()){
+            BreakableBubble bubble = iterator.next();
+	    if(!bubble.getVisibility()){
+		iterator.remove();
 	    }else{
-		g.drawImage(breakable.getImage(), breakable.getX(), breakable.getY(), null);
+		g.drawImage(bubble.getImage(), bubble.getX(), bubble.getY(), null);
                 Graphics2D graphic2D = (Graphics2D) g;
-                graphic2D.draw(breakable.getHitBox());
+                graphic2D.draw(bubble.getHitBox());
 	    }
 	}
     }
     
-    //TODO
+    
     public void randomBubble(){
-	Random randomB = new Random();
-	for(int i = 0; i <= 5; i++){
-	    randomB.nextInt();
-		if(i == 0){  
-	    }
-	}
+	Random rand = new Random();
+        randomBubble = rand.nextInt((6-1)+1) + 1;
     }
     
     public void setGameLists(){
@@ -193,21 +199,54 @@ public class GameWorld extends JPanel {
 	cannonControls = new Controller();
 	addKeyListener(cannonControls.getKeyAdapter());
 	this.cannonControls.addObserver(cannon1);
-	//this.cannonControls.addObserver(cannon2);
     }
     
      private void initKeyMapping() {
 	player1 = new KeyMapping(KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_ENTER);
-	player2 = new KeyMapping(KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_SPACE);
     }
     
     public void checkShooting() {
 	if (cannon1.getShoot() == true) {
-	    BubbleShot bubbleShot = new BubbleShot(cannon1.getX()+cannon1.getImageWidth()/4, cannon1.getY(), cannon1.getAngle(), 1, bullet1, 1, 1, true,"blue");
-            BSList.add(bubbleShot);
-	    cannon1.setShoot(false);
+            switch (randomBubble) {
+		    case 1:
+			BubbleShot shotBlue = new BubbleShot(cannon1.getX()+cannon1.getImageWidth()/4, cannon1.getY(), cannon1.getAngle(), 1, setBB, 1, 1, true,"blue");
+			BSList.add(shotBlue);
+                        shotBlue.setBounds(0,(1417/2)-40);
+                        break;
+		    case 2:
+			BubbleShot shotRed = new BubbleShot(cannon1.getX()+cannon1.getImageWidth()/4, cannon1.getY(), cannon1.getAngle(), 1, setRB, 1, 1, true,"red");
+			BSList.add(shotRed);
+                        shotRed.setBounds(0,(1417/2)-40);
+			break;
+		    case 3:
+			BubbleShot shotGreen = new BubbleShot(cannon1.getX()+cannon1.getImageWidth()/4, cannon1.getY(), cannon1.getAngle(), 1, setGB, 1, 1, true,"green");
+			BSList.add(shotGreen);
+                        shotGreen.setBounds(0,(1417/2)-40);
+			break;
+		    case 4:
+			BubbleShot shotYellow = new BubbleShot(cannon1.getX()+cannon1.getImageWidth()/4, cannon1.getY(), cannon1.getAngle(), 1, setYB, 1, 1, true,"yellow");
+			BSList.add(shotYellow);
+                        shotYellow.setBounds(0,(1417/2)-40);
+			break;
+		    case 5:
+			BubbleShot shotOrange = new BubbleShot(cannon1.getX()+cannon1.getImageWidth()/4, cannon1.getY(), cannon1.getAngle(), 1, setOB, 1, 1, true,"orange");
+			BSList.add(shotOrange);
+                        shotOrange.setBounds(0,(1417/2)-40);
+			break;
+		    case 6:
+			BubbleShot shotPurple = new BubbleShot(cannon1.getX()+cannon1.getImageWidth()/4, cannon1.getY(), cannon1.getAngle(), 1, setPB, 1, 1, true,"purple");
+			BSList.add(shotPurple);
+                        shotPurple.setBounds(0,(1417/2)-40);
+			break;
+		    default:
+			break;
+	   
 	}
-    }public void drawBullets(Graphics g) {
+        cannon1.setShoot(false);
+        randomBubble();
+    }
+}
+    public void drawBullets(Graphics g) {
 	Iterator<BubbleShot> iterator = BSList.iterator();
 	while (iterator.hasNext()) {
 	    BubbleShot bubbleShot = iterator.next();
@@ -221,32 +260,89 @@ public class GameWorld extends JPanel {
     }
     public void checkCollision(){  
         Iterator<BubbleShot> iterator = BSList.iterator();
+        Iterator<BreakableBubble> iteratorBreak = BBList.iterator();  
         while(iterator.hasNext()){
             BubbleShot BS = iterator.next();
-            Rectangle bsHitBox = BS.getHitBox();
-            for(BreakableBubble bubble: BBList){
-                Rectangle bbHitBox = bubble.getHitBox();
+            Rectangle bsHitBox = BS.getHitBox();  
+            while(iteratorBreak.hasNext()){
+                BreakableBubble BB = iteratorBreak.next();
+                Rectangle bbHitBox = BB.getHitBox();
                 if(bsHitBox.intersects(bbHitBox)){
-                    BS.setMove(false);
-                    BS.setCollide(true);
+                    if(BB.getColor().equals(BS.getColor())){
+                        if(!breakBubbles(BB, BS)){
+                            BS.setMove(false);
+                            BS.setCollide(true);
+                           // toBreakable();
+                        }
+                    }
+                    else{
+                       BS.setMove(false);
+                       BS.setCollide(true);
+                     //  toBreakable();
+                    }
                 }
             }
         }
    }
     public void toBreakable(){
-         Iterator<BubbleShot> iterator = BSList.iterator();
+        Iterator<BubbleShot> iterator = BSList.iterator();
         while(iterator.hasNext()){
-            BubbleShot BS = iterator.next();
-            if(BS.getCollide() == true){
-            BreakableBubble breakable = new BreakableBubble(BS.getX(),BS.getY(),setBB,0,0,BS.getColor());
+            BubbleShot shot = iterator.next();
+            if(shot.getCollide()){
+            BreakableBubble breakable = new BreakableBubble(shot.getX(),shot.getY(),shot.getImage(),0,0,shot.getColor());
             BBList.add(breakable);
-            BS.setVisibility(false);
+            shot.setVisibility(false);
             }
         }
     }
     
-    public void breakBubbles(){
+    public boolean breakBubbles(BreakableBubble bubble, BubbleShot shot){
+        ArrayList<BreakableBubble> Critical = new ArrayList();
+        Iterator<BreakableBubble> iterator = BBList.iterator();
+        while(iterator.hasNext()){
+        BreakableBubble bubbles = iterator.next();
+         Rectangle bubbleReference = bubble.getHitBox();
+         Rectangle bbHitBox = bubbles.getHitBox();
+                if(bubbles.getColor().equals(bubble.getColor()) && bbHitBox.intersects(bubbleReference)){
+                    Critical.add(bubbles);
+                }   
+        }
+        if(Critical.size()>= 2){
+            for(int i = 0; i<Critical.size();i++){
+                Critical.get(i).setVisibility(false);
+                cannon1.setScore(cannon1.getScore() + (Critical.size() * 2 ));
+                 shot.setVisibility(false);
+            }
+            return true;
+        }
+        return false;
+    }
+    public void drawNextBubble(Graphics g){
+        
+        switch (randomBubble) {
+		    case 1:
+                        g.drawImage(setBB, cannon1.getX(), cannon1.getY()+cannon1.getImageHeight(), null);
+			break;
+		    case 2:
+                        g.drawImage(setRB,cannon1.getX(), cannon1.getY()+cannon1.getImageHeight(), null);
+			break;
+		    case 3:
+			g.drawImage(setGB,cannon1.getX(), cannon1.getY()+cannon1.getImageHeight(), null);
+			break;
+		    case 4:
+                        g.drawImage(setYB,cannon1.getX(), cannon1.getY()+cannon1.getImageHeight(), null);
+			break;
+		    case 5:	
+                        g.drawImage(setOB,cannon1.getX(), cannon1.getY()+cannon1.getImageHeight(), null);
+			break;
+		    case 6:
+                        g.drawImage(setPB, cannon1.getX(), cannon1.getY()+cannon1.getImageHeight(), null);
+			break;
+		    default:
+			break;
+		}
         
     }
+    
     
 }

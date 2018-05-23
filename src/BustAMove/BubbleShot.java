@@ -21,6 +21,7 @@ public class BubbleShot extends Movable {
     final int r = 15;
     private short angle;
     private int player;
+    private int leftBound, rightBound;
     private boolean moveable;
     private boolean collide;
     private String bubbleColor;
@@ -39,9 +40,14 @@ public class BubbleShot extends Movable {
 	Graphics2D graphic2D = (Graphics2D) g;
 	graphic2D.drawImage(this.getImage(), rotation, null);
         graphic2D.draw(this.getHitBox());
+        
     }
     public void move(){
         if(moveable == true){
+            
+        if(x<leftBound){angle+=90;}
+        else if(x>rightBound){angle-=90;}    
+        
         deltaX = (int) Math.round(r * Math.cos(Math.toRadians(angle)));
 	deltaY = (int) Math.round(r * Math.sin(Math.toRadians(angle)));
 	x += deltaX;
@@ -65,6 +71,10 @@ public class BubbleShot extends Movable {
     }
     public String getColor(){
         return this.bubbleColor;
+    }
+     public void setBounds(int left, int right){
+        this.leftBound = left;
+        this.rightBound = right;
     }
     
 }

@@ -21,13 +21,10 @@ import java.util.Set;
 public class Cannon extends Movable implements Observer {
     
      //data fields
-    private int health;
     private Set<Integer> keys;
     private int ammo;
-    private int lives;
     private int deltaX, deltaY;
     private int nonCollideX,nonCollideY;
-    private int spawnX,spawnY;
     final int r = 15;
     public short angle;
     private KeyMapping keyMap;
@@ -35,6 +32,7 @@ public class Cannon extends Movable implements Observer {
     protected int xCollide, yCollide;
     private boolean shotsFired, collided;
     private int player;
+    private int playerScore;
     long lastShoot = System.currentTimeMillis();
     final long threshold = 1000;
 
@@ -45,10 +43,6 @@ public class Cannon extends Movable implements Observer {
 	this.angle = angle;
 	this.shotsFired = false;
 	collided = false;
-        this.health = 100;
-        this.spawnX = x;
-        this.spawnY = y;
-        this.lives = 3;
         this.player = player;
     }
     
@@ -114,7 +108,11 @@ public class Cannon extends Movable implements Observer {
     public int getPlayer(){
         return this.player;
     }
-    
-    
-    
+    public void setScore(int score){
+        this.playerScore = score;
+    }
+    public int getScore(){
+        return this.playerScore;
+    }
+       
 }
