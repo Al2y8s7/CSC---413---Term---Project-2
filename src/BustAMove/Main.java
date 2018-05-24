@@ -19,7 +19,7 @@ import javax.swing.JLabel;
  */
 public class Main extends JFrame implements ActionListener {
 
-    final static int WINDOW_WIDTH = 1417;
+    final static int WINDOW_WIDTH = 1417 / 2;
     final static int WINDOW_HEIGHT = 832;
 
     public static void main(String[] args) {
