@@ -3,6 +3,7 @@ package BustAMove;
 
 import static BustAMove.Main.WINDOW_HEIGHT;
 import static BustAMove.Main.WINDOW_WIDTH;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -28,7 +29,7 @@ public class GameWorld extends JPanel {
     private Cannon cannon1, cannon2;
     BufferedImage cannonImage;
     private Controller cannonControls;
-    private BufferedImage background, leftScreen, rightScreen;
+    private BufferedImage background, leftScreen, rightScreen, gameOver;
     private static BufferedImage gameMap, setBB, setRB, setGB, setYB, setOB, setPB, bullet1;
     private int width, height;
     private Timer timer;
@@ -61,7 +62,10 @@ public class GameWorld extends JPanel {
     public void paintComponent(Graphics g){
 	super.paintComponents(g);
 	drawEverything(g);
+        g.setColor(Color.red);
+        g.fillRect(0, 500, this.getWidth(), 20);
         drawNextBubble(g);
+        gameOver(g);
 	//SplitScreen(g);
 	//g.dispose();
     }
@@ -96,6 +100,7 @@ public class GameWorld extends JPanel {
 	     setPB = ImageIO.read(GameWorld.class.getResource("resources/setPB.png"));
 	     cannonImage = ImageIO.read(GameWorld.class.getResource("resources/cannon.png"));
 	     bullet1 = ImageIO.read(GameWorld.class.getResource("resources/bullet1.png"));
+             gameOver = ImageIO.read(GameWorld.class.getResource("resources/gameOver.png"));
 
 	     
 	}catch(IOException ex){
@@ -310,9 +315,9 @@ public class GameWorld extends JPanel {
         if(Critical.size()>= 2){
             for(int i = 0; i<Critical.size();i++){
                 Critical.get(i).setVisibility(false);
-                cannon1.setScore(cannon1.getScore() + (Critical.size() * 2 ));
                  shot.setVisibility(false);
             }
+            cannon1.setScore(cannon1.getScore() + (Critical.size() * 2 ));
             return true;
         }
         return false;
@@ -343,6 +348,13 @@ public class GameWorld extends JPanel {
 		}
         
     }
-    
+    public void gameOver(Graphics g){
+        for(BreakableBubble bubble: BBList){
+            if(bubble.getY()>500-32){
+                g.drawImage(gameOver, 0, 0, null);
+                timer.stop();
+            }
+        }
+    }
     
 }

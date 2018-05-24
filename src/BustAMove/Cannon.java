@@ -32,7 +32,7 @@ public class Cannon extends Movable implements Observer {
     protected int xCollide, yCollide;
     private boolean shotsFired, collided;
     private int player;
-    private int playerScore;
+    private int playerScore = 0;
     long lastShoot = System.currentTimeMillis();
     final long threshold = 1000;
 

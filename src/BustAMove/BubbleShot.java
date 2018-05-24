@@ -38,9 +38,7 @@ public class BubbleShot extends Movable {
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
 	rotation.rotate(Math.toRadians(angle), this.getImage().getWidth() / 2, this.getImage().getHeight() / 2);
 	Graphics2D graphic2D = (Graphics2D) g;
-	graphic2D.drawImage(this.getImage(), rotation, null);
-        graphic2D.draw(this.getHitBox());
-        
+	graphic2D.drawImage(this.getImage(), rotation, null);  
     }
     public void move(){
         if(moveable == true){
