@@ -186,6 +186,7 @@ public class GameWorld extends JPanel {
 	    }else{
 		g.drawImage(bubble.getImage(), bubble.getX(), bubble.getY(), null);
                 Graphics2D graphic2D = (Graphics2D) g;
+		//draw hit box for collision detection
                 //graphic2D.draw(bubble.getHitBox());
 	    }
 	}
