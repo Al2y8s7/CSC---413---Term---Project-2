@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 
 /**
  *
- * @author Alnguye
+ * @author Alvin Nguyen & Moses Martinez
  */
 public abstract class GameObject {
     BufferedImage content;

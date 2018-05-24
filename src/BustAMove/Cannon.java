@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package BustAMove;
 
 import java.awt.Graphics;
@@ -16,18 +11,15 @@ import java.util.Set;
 
 /**
  *
- * @author Alnguye
+ * @author Alvin Nguyen & Moses Martinez
  */
 public class Cannon extends Movable implements Observer {
     
      //data fields
-    private int health;
     private Set<Integer> keys;
     private int ammo;
-    private int lives;
     private int deltaX, deltaY;
     private int nonCollideX,nonCollideY;
-    private int spawnX,spawnY;
     final int r = 15;
     public short angle;
     private KeyMapping keyMap;
@@ -35,6 +27,7 @@ public class Cannon extends Movable implements Observer {
     protected int xCollide, yCollide;
     private boolean shotsFired, collided;
     private int player;
+    private int playerScore = 0;
     long lastShoot = System.currentTimeMillis();
     final long threshold = 1000;
 
@@ -45,30 +38,15 @@ public class Cannon extends Movable implements Observer {
 	this.angle = angle;
 	this.shotsFired = false;
 	collided = false;
-        this.health = 100;
-        this.spawnX = x;
-        this.spawnY = y;
-        this.lives = 3;
         this.player = player;
     }
-    
     
     @Override
     public void update(Observable o, Object arg) {
 	Controller controller = (Controller) o;
 	keys = controller.getKeys();
-	moveCannon();
-	
+	moveCannon();	
     }
-    
-    public int getAmmo(int ammo) {
-	return this.ammo = ammo;
-    }
-
-    public void setAmmo(int ammo) {
-	this.ammo = ammo;
-    }
-
     public void shoot() {
 	this.shotsFired = true;
     }
@@ -78,33 +56,19 @@ public class Cannon extends Movable implements Observer {
     public boolean getShoot(){
         return this.shotsFired;
     }
-     
-//   public synchronized void moveUp() {
-//	deltaX = (int) Math.round(r * Math.cos(Math.toRadians(angle)));
-//	deltaY = (int) Math.round(r * Math.sin(Math.toRadians(angle)));
-//	x += deltaX;
-//	y += deltaY;
-//    }
-//
-//    public synchronized void moveDown() {
-//	deltaX = (int) Math.round(r * Math.cos(Math.toRadians(angle)));
-//	deltaY = (int) Math.round(r * Math.sin(Math.toRadians(angle)));
-//	x -= deltaX;
-//	y -= deltaY;
-//    }
-
     public synchronized void moveLeft() {
-	this.angle -= 10;
+	this.angle -= 5;
+        if(this.angle <=180)
+            this.angle = 180;
     }
 
     public synchronized void moveRight() {
-	this.angle += 10;
+	this.angle += 5;
+        if(this.angle >=360)
+            this.angle = 360;
     }
 
     private void moveCannon() {
-//	if (keys.contains(keyMap.getUpKey())) {
-//	    this.moveUp();
-//	}
 	if (keys.contains(keyMap.getRightKey())) {
 	    this.moveRight();
 	}
@@ -115,6 +79,7 @@ public class Cannon extends Movable implements Observer {
 	    this.moveLeft();
 	}
 	if (keys.contains(keyMap.getShootKey())) {
+            System.out.println("Shoot");
             long current = System.currentTimeMillis();
             if((current - threshold) > lastShoot){
 	    this.shoot();
@@ -129,7 +94,6 @@ public class Cannon extends Movable implements Observer {
 	rotation.rotate(Math.toRadians(angle), this.getImage().getWidth() / 2, this.getImage().getHeight() / 2);
 	Graphics2D graphic2D = (Graphics2D) g;
 	graphic2D.drawImage(this.getImage(), rotation, null);
-        //graphic2D.draw(this.getHitBox());
     }
     
     public short getAngle(){
@@ -139,7 +103,12 @@ public class Cannon extends Movable implements Observer {
     public int getPlayer(){
         return this.player;
     }
+    public void setScore(int score){
+        this.playerScore = score;
+    }
+    public int getScore(){
+        return this.playerScore;
+    }
     
-    
-    
+       
 }
