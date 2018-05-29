@@ -1,4 +1,4 @@
-# Bust A Move
+# Bust A Move Game
 
 csc413-03-SecondGame-Team 12
 
