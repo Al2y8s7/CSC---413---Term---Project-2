@@ -1,6 +1,6 @@
-# csc413-SecondGame
+# Bust A Move
 
-csc413-03-SecondGame- Team 12
+csc413-03-SecondGame-Team 12
 
 Authors: Alvin Nguyen, Moses Martinez
 
